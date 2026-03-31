@@ -85,6 +85,22 @@ str(data)
 # Convert Class as factor
 names(data)[17] = "Class"
 data$Class = as.factor(data$Class)
+# Convert all variables as factor except Age
+data$Gender = as.factor(data$Gender)
+data$Polyuria = as.factor(data$Polyuria)
+data$Polydipsia = as.factor(data$Polydipsia)
+data$sudden.weight.loss = as.factor(data$sudden.weight.loss)
+data$weakness = as.factor(data$weakness)
+data$Polyphagia = as.factor(data$Polyphagia)
+data$Genital.thrush = as.factor(data$Genital.thrush)
+data$visual.blurring = as.factor(data$visual.blurring)
+data$Itching = as.factor(data$Itching)
+data$Irritability = as.factor(data$Irritability)
+data$delayed.healing = as.factor(data$delayed.healing)
+data$partial.paresis = as.factor(data$partial.paresis)
+data$muscle.stiffness = as.factor(data$muscle.stiffness)
+data$Alopecia = as.factor(data$Alopecia)
+data$Obesity = as.factor(data$Obesity)
 
 # Check class balance
 data %>% group_by(Class) %>% count()
@@ -153,7 +169,7 @@ kaniad_f1_1 = c()
 
 
 # Open cluster
-cl = makeCluster(7)
+cl = makeCluster(10)
 registerDoParallel(cl)
 start_time = Sys.time()
 random_index = sample(x = 1:1000, size = n, replace = FALSE)
@@ -175,7 +191,7 @@ for (i in 1:length(random_index)) {
                                           X_names = colnames(train_data)[-ncol(train_data)], 
                                           data = train_data, 
                                           depth = 50,
-                                          min_obs = 2, 
+                                          min_obs = 1, 
                                           type = "Shannon", entropy_par = 1,
                                           cp = 0, n_cores = 1, weights = NULL, cost = NULL, 
                                           class_th = "equal", overfit = "prune", cf = 0.25)
@@ -199,7 +215,7 @@ for (i in 1:length(random_index)) {
                                               "Class",
                                               numberoffolds = 10,
                                               choose_depth = 50, 
-                                              choose_min_obs = 2, 
+                                              choose_min_obs = 1, 
                                               choose_entr_par = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                               choose_cp = 0,
                                               choose_cf = 0.25,
@@ -212,7 +228,7 @@ for (i in 1:length(random_index)) {
   renyi_tree = ImbTreeEntropyKaniadakis(Y_name = "Class", 
                                         X_names = colnames(train_data)[-ncol(train_data)], 
                                         data = train_data, depth = 50
-                                        , min_obs = 2, 
+                                        , min_obs = 1, 
                                         type = "Renyi", entropy_par = best_parameter$entropy_par,
                                         cp = 0, n_cores = 1, weights = NULL, cost = NULL, 
                                         class_th = "equal", overfit = "prune", cf = 0.25)
@@ -235,7 +251,7 @@ for (i in 1:length(random_index)) {
                                                "Class",
                                                numberoffolds = 10,
                                                choose_depth = 50,
-                                               choose_min_obs = 2, # default
+                                               choose_min_obs = 1, # default
                                                choose_entr_par_one = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                                choose_entr_par_two = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                                choose_cp = 0,
@@ -248,7 +264,7 @@ for (i in 1:length(random_index)) {
   sh_mit_tree = ImbTreeEntropyKaniadakis(Y_name = "Class", 
                                          X_names = colnames(train_data)[-ncol(train_data)], 
                                          data = train_data, depth = 50
-                                         , min_obs = 2, 
+                                         , min_obs = 1, 
                                          type = "Sharma-Mittal", 
                                          entropy_par = c(best_parameter$entropy_par_one,best_parameter$entropy_par_two),
                                          cp = 0, n_cores = 1, weights = NULL, cost = NULL, 
@@ -274,7 +290,7 @@ for (i in 1:length(random_index)) {
                                                 "Class",
                                                 numberoffolds = 10,
                                                 choose_depth = 50,
-                                                choose_min_obs = 5,
+                                                choose_min_obs = 1,
                                                 choose_entr_par = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                                 choose_cp = 0,
                                                 choose_cf = 0.25,
@@ -288,7 +304,7 @@ for (i in 1:length(random_index)) {
   tsallis_tree = ImbTreeEntropyKaniadakis(Y_name = "Class", 
                                           X_names = colnames(train_data)[-ncol(train_data)], 
                                           data = train_data, depth = 50
-                                          , min_obs = 2, 
+                                          , min_obs = 1, 
                                           type = "Tsallis", entropy_par = best_parameter$entropy_par,
                                           cp = 0, n_cores = 1, weights = NULL, cost = NULL, 
                                           class_th = "equal", overfit = "prune", cf = 0.25)
@@ -311,7 +327,7 @@ for (i in 1:length(random_index)) {
                                                 "Class",
                                                 numberoffolds = 10,
                                                 choose_depth = 50,
-                                                choose_min_obs = 2,
+                                                choose_min_obs = 1,
                                                 choose_entr_par_one = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                                 choose_entr_par_two = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                                 choose_cp = 0,
@@ -324,7 +340,7 @@ for (i in 1:length(random_index)) {
   sh_tan_tree = ImbTreeEntropyKaniadakis(Y_name = "Class", 
                                          X_names = colnames(train_data)[-ncol(train_data)], 
                                          data = train_data, depth = 50
-                                         , min_obs = 2, 
+                                         , min_obs = 1, 
                                          type = "Sharma-Taneja", 
                                          entropy_par = c(best_parameter$entropy_par_one,best_parameter$entropy_par_two),
                                          cp = 0, n_cores = 1, weights = NULL, cost = NULL, 
@@ -349,7 +365,7 @@ for (i in 1:length(random_index)) {
                                               "Class",
                                               numberoffolds = 10,
                                               choose_depth = 50,
-                                              choose_min_obs = 2,
+                                              choose_min_obs = 1,
                                               choose_entr_par_one = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                               choose_entr_par_two = c(0.25,0.5,0.75,1.25,1.5,2,2.25,2.5,3,3.25,3.5,3.75,4),
                                               choose_cp = 0,
@@ -362,7 +378,7 @@ for (i in 1:length(random_index)) {
   kapur_tree = ImbTreeEntropyKaniadakis(Y_name = "Class", 
                                         X_names = colnames(train_data)[-ncol(train_data)], 
                                         data = train_data, depth = 50
-                                        , min_obs = 2, 
+                                        , min_obs = 1, 
                                         type = "Kapur", 
                                         entropy_par = c(best_parameter$entropy_par_one,best_parameter$entropy_par_two),
                                         cp = 0, n_cores = 1, weights = NULL, cost = NULL, 
@@ -387,7 +403,7 @@ for (i in 1:length(random_index)) {
                                                "Class",
                                                numberoffolds = 10,
                                                choose_depth = 50,
-                                               choose_min_obs = 2,
+                                               choose_min_obs = 1,
                                                choose_entr_par = c(seq(0.1,0.9,0.1)),
                                                choose_cp = 0,
                                                choose_cf = 0.25,
@@ -399,7 +415,7 @@ for (i in 1:length(random_index)) {
   kaniad_tree = ImbTreeEntropyKaniadakis(Y_name = "Class", 
                                          X_names = colnames(train_data)[-ncol(train_data)], 
                                          data = train_data, depth = 50
-                                         , min_obs = 2, 
+                                         , min_obs = 1, 
                                          type = "Kaniadakis", 
                                          entropy_par = best_parameter$entropy_par,
                                          cp = 0, n_cores = 1, weights = NULL, cost = NULL, 
